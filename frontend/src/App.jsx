@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import "./App.css";
-
-const SERVER_URL = "http://localhost:5000";
+const SERVER_URL = "https://studyconnect-backend-psoz.onrender.com";
 const API_URL = `${SERVER_URL}/api/auth`;
 const POSTS_API_URL = `${SERVER_URL}/api/posts`;
 const USERS_API_URL = `${SERVER_URL}/api/users`;
