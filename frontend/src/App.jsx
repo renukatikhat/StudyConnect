@@ -137,6 +137,7 @@ function App() {
 
   // Students and following
   const [students, setStudents] = useState([]);
+  const [studentSearch, setStudentSearch] = useState("");
   const [studentsLoading, setStudentsLoading] = useState(false);
   const [studentsMessage, setStudentsMessage] = useState("");
   const [selectedProfile, setSelectedProfile] = useState(null);
@@ -816,7 +817,24 @@ function App() {
     selectedCommunity === "All"
       ? posts
       : posts.filter((post) => post.community === selectedCommunity);
+const filteredStudents = students.filter((student) => {
+  const query = studentSearch.trim().toLowerCase();
 
+  if (!query) return true;
+
+  const name = String(student.name || "").toLowerCase();
+  const email = String(student.email || "").toLowerCase();
+
+  const skills = Array.isArray(student.skills)
+    ? student.skills.join(" ").toLowerCase()
+    : String(student.skills || "").toLowerCase();
+
+  return (
+    name.includes(query) ||
+    email.includes(query) ||
+    skills.includes(query)
+  );
+});
   function renderPost(post) {
     return (
       <PostCard
@@ -1683,79 +1701,139 @@ function App() {
                   </div>
                 )}
 
-              <div className="student-grid">
-                {students.map((student) => (
-                  <article
-                    className="profile-card student-card"
-                    key={getId(student)}
-                  >
-                    <Avatar
-                      user={student}
-                      className="avatar profile-avatar"
-                    />
-                    <h2>{student.name}</h2>
-                    <p>{student.email}</p>
-                    <p>{student.bio || "Student at StudyConnect"}</p>
+              
+<div className="student-search">
+  <span className="search-icon" aria-hidden="true">⌕</span>
 
-                    <div className="student-stats">
-                      <button
-                        type="button"
-                        className="stat-button"
-                        onClick={() =>
-                          openFollowList(student, "followers")
-                        }
-                      >
-                        <strong>{student.followers || 0}</strong>
-                        <span>Followers</span>
-                      </button>
+  <input
+    type="search"
+    value={studentSearch}
+    onChange={(event) => setStudentSearch(event.target.value)}
+    placeholder="Search by name, email, or skills..."
+    aria-label="Search students"
+  />
 
-                      <button
-                        type="button"
-                        className="submit-button"
-                        onClick={() => openStudentProfile(student)}
-                      >
-                        View Profile
-                      </button>
+  {studentSearch && (
+    <button
+      type="button"
+      className="clear-search"
+      onClick={() => setStudentSearch("")}
+    >
+      Clear
+    </button>
+  )}
+</div>
 
-                      <button
-                        type="button"
-                        className="stat-button"
-                        onClick={() =>
-                          openFollowList(student, "following")
-                        }
-                      >
-                        <strong>{student.following || 0}</strong>
-                        <span>Following</span>
-                      </button>
-                    </div>
 
-                    {student.skills?.length > 0 && (
-                      <p>
-                        <strong>Skills:</strong> {student.skills.join(", ")}
-                      </p>
-                    )}
 
-                    {student.isMe ? (
-                      <button
-                        type="button"
-                        className="submit-button"
-                        disabled
-                      >
-                        Your Profile
-                      </button>
-                    ) : (
-                      <button
-                        type="button"
-                        className="submit-button"
-                        onClick={() => toggleFollow(student)}
-                        disabled={studentsLoading}
-                      >
-                        {student.isFollowing ? "Unfollow" : "Follow"}
-                      </button>
-                    )}
-                  </article>
-                ))}
-              </div>
+
+
+
+{filteredStudents.length === 0 && !studentsLoading ? (
+  <div className="empty-state">
+    <span>🔎</span>
+    <h3>No matching students</h3>
+    <p>Try another name, email address, or skill.</p>
+  </div>
+) : (
+  <div className="student-grid">
+    {filteredStudents.map((student) => (
+      <article
+        className="profile-card student-card"
+        key={getId(student)}
+      >
+        <Avatar
+          user={student}
+          className="avatar profile-avatar"
+        />
+
+        <h2>{student.name}</h2>
+        <p>{student.email}</p>
+        <p>{student.bio || "Student at StudyConnect"}</p>
+
+        <div className="student-stats">
+          <button
+            type="button"
+            className="stat-button"
+            onClick={() => openFollowList(student, "followers")}
+          >
+            <strong>{student.followers || 0}</strong>
+            <span>Followers</span>
+          </button>
+
+          <button
+            type="button"
+            className="submit-button"
+            onClick={() => openStudentProfile(student)}
+          >
+            View Profile
+          </button>
+
+          <button
+            type="button"
+            className="stat-button"
+            onClick={() => openFollowList(student, "following")}
+          >
+            <strong>{student.following || 0}</strong>
+            <span>Following</span>
+          </button>
+        </div>
+
+        {student.skills?.length > 0 && (
+          <p>
+            <strong>Skills:</strong>{" "}
+            {Array.isArray(student.skills)
+              ? student.skills.join(", ")
+              : student.skills}
+          </p>
+        )}
+
+        {student.isMe ? (
+          <button
+            type="button"
+            className="submit-button"
+            disabled
+          >
+            Your Profile
+          </button>
+        ) : (
+          <button
+            type="button"
+            className="submit-button"
+            onClick={() => toggleFollow(student)}
+            disabled={studentsLoading}
+          >
+            {student.isFollowing ? "Unfollow" : "Follow"}
+          </button>
+        )}
+      </article>
+    ))}
+  </div>
+)}
+
+              
+
+              {students.length > 0 &&
+                !students.some((student) => {
+                  const query = studentSearch.trim().toLowerCase();
+                  if (!query) return true;
+                  const nameMatches = String(student.name || "").toLowerCase().includes(query);
+                  const emailMatches = String(student.email || "").toLowerCase().includes(query);
+                  const skills = Array.isArray(student.skills)
+                    ? student.skills
+                    : typeof student.skills === "string"
+                      ? student.skills.split(",")
+                      : [];
+                  return nameMatches || emailMatches || skills.some((skill) => String(skill).toLowerCase().includes(query));
+                }) && (
+                  <div className="empty-state">
+                    <span>🔎</span>
+                    <h3>No matching students</h3>
+                    <p>Try another name, email address, or skill.</p>
+                  </div>
+                )}
+
+              
             </section>
           )}
 
@@ -1906,7 +1984,6 @@ function PostCard({ post, liked, saved, onLike, onSave }) {
   const [loadingComments, setLoadingComments] = useState(false);
   const [message, setMessage] = useState("");
   const [sending, setSending] = useState(false);
-
   async function toggleComments() {
     const opening = !showComments;
     setShowComments(opening);
@@ -2082,3 +2159,5 @@ function PostCard({ post, liked, saved, onLike, onSave }) {
 }
 
 export default App;
+
+
