@@ -2188,3 +2188,154 @@ img {
   font-size: 12px;
   font-weight: 700;
 }
+/* Responsive layout improvements */
+@media (max-width: 768px) {
+  .app,
+  .dashboard,
+  .main-content {
+    width: 100%;
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  .post,
+  .post-card,
+  .card {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  button {
+    max-width: 100%;
+    white-space: normal;
+  }
+
+  input,
+  textarea,
+  select {
+    max-width: 100%;
+    box-sizing: border-box;
+  }
+
+  img {
+    max-width: 100%;
+    height: auto;
+  }
+}
+
+/* Professional student directory */
+.student-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 20px;
+  align-items: stretch;
+  margin-top: 24px;
+}
+
+.student-card {
+  min-width: 0;
+  padding: 24px 20px;
+  border: 1px solid #e8e6f2;
+  border-radius: 20px;
+  background: #ffffff;
+  box-shadow: 0 8px 24px rgba(42, 35, 90, 0.05);
+  text-align: center;
+  overflow-wrap: anywhere;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.student-card:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 14px 30px rgba(42, 35, 90, 0.10);
+}
+
+.student-card .avatar {
+  margin: 0 auto 12px;
+}
+
+.student-card h2,
+.student-card h3 {
+  overflow-wrap: anywhere;
+  line-height: 1.4;
+}
+
+.student-card p {
+  overflow-wrap: anywhere;
+  word-break: normal;
+  line-height: 1.6;
+}
+
+.student-card .submit-button {
+  width: 100%;
+  min-height: 46px;
+  margin-top: 16px;
+  border-radius: 12px;
+  white-space: normal;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+.student-stats {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin: 20px 0;
+}
+
+.student-stats > *,
+.student-stats button {
+  min-width: 0;
+  text-align: center;
+}
+
+.student-stats strong {
+  display: block;
+  margin-bottom: 5px;
+  font-size: 22px;
+  color: #39316f;
+}
+
+.student-stats span {
+  font-size: 12px;
+  line-height: 1.4;
+  overflow-wrap: normal;
+  word-break: normal;
+}
+
+@media (max-width: 1100px) {
+  .dashboard-layout {
+    grid-template-columns: 210px minmax(0, 1fr);
+    gap: 20px;
+  }
+
+  .right-sidebar {
+    display: none;
+  }
+}
+
+@media (max-width: 700px) {
+  .dashboard-layout {
+    grid-template-columns: minmax(0, 1fr);
+    padding: 16px;
+  }
+
+  .sidebar {
+    position: static;
+    width: 100%;
+    height: auto;
+    min-height: 0;
+  }
+
+  .student-grid {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 16px;
+  }
+
+  .student-card {
+    padding: 22px 18px;
+  }
+
+  .topbar {
+    padding: 0 16px;
+  }
+}
